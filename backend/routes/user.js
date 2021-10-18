@@ -1,4 +1,4 @@
-// Création des routes.
+// Création d'un routeur Express qui contiendra la logique de nos routes
 const express = require('express');
 const router = express.Router();
 
