@@ -11,7 +11,7 @@ const app = express();
 // en configurant de manière appropriée des en-têtes HTTP
 const helmet = require('helmet');
 
-// Module Dotenv pour éviter stocker des informations sensibles au sein de notre application
+// Module dotenv pour éviter stocker des informations sensibles au sein de notre application
 require('dotenv').config();
 
 //Mongoose est un package qui facilite les interactions avec notre base de données MongoDB grâce 
@@ -57,5 +57,5 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 
-// Export pour pouvoir s'en servir dans nos autres fichiers
+// Export de app.js pour pouvoir s'en servir dans nos autres fichiers
 module.exports = app;

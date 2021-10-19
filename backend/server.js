@@ -44,6 +44,8 @@ const errorHandler = error => {
   }
 };
 
+// La méthode createServer() prend en argument la fonction qui sera appelée à chaque requête reçu par le
+// serveur, ici les fonctions seront dans app.js.
 const server = http.createServer(app);
 
 server.on('error', errorHandler);
@@ -53,6 +55,5 @@ server.on('listening', () => {
   console.log('Listening on ' + bind);
 });
 
-// un écouteur d'évènements est également enregistré, consignant le port ou le canal nommé sur lequel le 
-// serveur s'exécute dans la console.
+// Ecouteur d'évènements consignant le port ou le canal nommé sur lequel le serveur s'exécute dans la console.
 server.listen(port);
