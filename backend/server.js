@@ -5,6 +5,10 @@ const http = require('http');
 // Import Application 
 const app = require('./app');
 
+// Import du package Cors (pour résoudre une erreur inconnue lors de la création d'un user depuis le front)
+const cors = require('cors');
+app.use(cors())
+
 // La fonction normalizePort renvoie un port valide, qu'il soit fourni sous la forme d'un numéro ou d'une chaîne
 const normalizePort = val => {
     const port = parseInt(val, 10);
