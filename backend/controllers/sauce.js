@@ -106,13 +106,16 @@ exports.likeDislikeSauce = (req, res, next) => {
   let userId = req.body.userId
   let sauceId = req.params.id
   
+  // L'instruction switch évalue une expression et, selon le résultat obtenu et le cas associé, exécute les
+  // instructions correspondantes.
   switch (like) {
     case 1 :
         /// Ajout d'un Like pour une sauceId précise en fonction de l'userId
         Sauce.updateOne({ _id: sauceId }, { $push: { usersLiked: userId }, $inc: { likes: +1 }})
           .then(() => res.status(200).json({ message: `J'aime` }))
           .catch((error) => res.status(400).json({ error }))
-            
+      // L'instruction break permet de terminer la boucle en cours ou l'instruction switch en cours 
+      // et de passer le contrôle du programme à l'instruction suivant l'instruction terminée.   
       break;
     
     case 0 :

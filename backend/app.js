@@ -1,9 +1,6 @@
 // Import de express
 const express = require('express');
 
-// Package bodyParser pour être capables d'extraire l'objet JSON des demandes
-const bodyParser = require('body-parser');
-
 // Notre application expess
 const app = express();
 
@@ -47,7 +44,7 @@ app.use((req, res, next) => {
 });
 
 // Middleware global pour notre application
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Indique à Express qu'il faut gérer la ressource images de manière statique (un sous-répertoire de notre 
 // répertoire de base, __dirname ) à chaque fois qu'elle reçoit une requête vers la route /images 

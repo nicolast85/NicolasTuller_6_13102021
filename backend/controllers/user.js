@@ -14,25 +14,26 @@ const cryptojs = require('crypto-js');
 require('dotenv').config();
 
 // Nos routes d'authentification :
+// ------------------------------
 // Utilisation de CryptoJs pour chiffrer le mail avec la variable emailCryptoJs, type d'algorithme : HmacSHA512
 // Fonction de hachage de bcrypt dans notre mot de passe pour « saler » le mot de passe 10 fois. Plus la valeur 
 // est élevée, plus l'exécution de la fonction sera longue mais plus le hachage sera sécurisé.
 // Il s'agit d'une fonction asynchrone qui renvoie une Promise dans laquelle nous recevons le hash généré :
 // dans notre bloc then, nous créons un utilisateur et l'enregistrons dans la base de données, en renvoyant 
 // une réponse de réussite en cas de succès, et des erreurs avec le code d'erreur en cas d'échec.
-exports.signup = (req, res, next) => {
-    // const emailCryptoJs = cryptojs.HmacSHA512(req.body.email, process.env.SECRET_CRYPTOJS_TOKEN).toString(cryptojs.enc.Base64);
+exports.signup = (req, res, next) => { 
+    const emailCryptoJs = cryptojs.HmacSHA512(req.body.email, process.env.SECRET_CRYPTOJS_TOKEN).toString(cryptojs.enc.Base64);
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
         const user = new User({
-          email: req.body.email,
+          email: emailCryptoJs,
           password: hash
         });
         user.save()
           .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
           .catch(error => res.status(400).json({ error }));
       })
-      .catch(error => res.status(500).json({ error }));
+      .catch(error => res.status(500).json({ error })); 
   };
 
 // Utilisation de CryptoJs pour chiffrer le mail avec la variable emailCryptoJs, type d'algorithme : HmacSHA512
@@ -52,8 +53,8 @@ exports.signup = (req, res, next) => {
 // définissons la durée de validité du token à 24 heures avec expiresIn. L'utilisateur devra donc se reconnecter 
 // au bout de 24 heures.
 exports.login = (req, res, next) => {
-  // const emailCryptoJs = cryptojs.HmacSHA512(req.body.email, process.env.SECRET_CRYPTOJS_TOKEN).toString(cryptojs.enc.Base64);
-  User.findOne({ email: req.body.email })
+  const emailCryptoJs = cryptojs.HmacSHA512(req.body.email, process.env.SECRET_CRYPTOJS_TOKEN).toString(cryptojs.enc.Base64);
+  User.findOne({ email: emailCryptoJs })
     .then(user => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !' });

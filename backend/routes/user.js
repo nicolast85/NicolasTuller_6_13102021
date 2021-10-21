@@ -4,7 +4,10 @@ const router = express.Router();
 
 const userCtrl = require('../controllers/user');
 
-router.post('/signup', userCtrl.signup);
+// Vérification du middlware password
+const verifPassword = require('../middleware/password')
+
+router.post('/signup', verifPassword, userCtrl.signup);
 router.post('/login', userCtrl.login);
 
 module.exports = router;
