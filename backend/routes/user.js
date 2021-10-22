@@ -4,8 +4,8 @@ const router = express.Router();
 
 const userCtrl = require('../controllers/user');
 
-// Vérification du middlware password
-const verifPassword = require('../middleware/password')
+// Vérification du password
+const verifPassword = require('../controllers/password')
 
 router.post('/signup', verifPassword, userCtrl.signup);
 router.post('/login', userCtrl.login);
