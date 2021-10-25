@@ -1,11 +1,10 @@
 // Import du package HTTP natif de Node et l'utilisez pour créer un serveur, en passant une fonction 
-// qui sera exécutée à chaque appel effectué vers ce serveur. Cette fonction reçoit les objets request et 
-// response en tant qu'arguments.
+// qui sera exécutée à chaque appel effectué vers ce serveur.
 const http = require('http');
 // Import Application 
 const app = require('./app');
 
-// Import du package Cors (pour résoudre une erreur inconnue lors de la création d'un user depuis le front)
+// Import du package Cors
 const cors = require('cors');
 app.use(cors())
 
