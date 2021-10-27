@@ -4,7 +4,8 @@ const http = require('http');
 // Import Application 
 const app = require('./app');
 
-// Import du package Cors
+// Import du package Cors (Cross-origin resource sharing : permettre à un agent utilisateur d'accéder à des ressources 
+// d'un serveur situé sur une autre origine que le site courant)
 const cors = require('cors');
 app.use(cors())
 

@@ -1,1 +1,4 @@
-Pour lancer le frontend, rendez vous dans le dossier frontend et faites "npm start" Puis, pour lancer le backend, rendez vous dans le dossier backend et faites "nodemon server"
+Clonez le repository
+Exécutez npm install à partir du répertoire du projet
+Pour lancer le frontend, rendez vous dans le dossier frontend et faites "npm start" 
+Pour lancer le backend, rendez vous dans le dossier backend et faites "nodemon server"

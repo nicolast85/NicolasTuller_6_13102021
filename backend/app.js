@@ -31,11 +31,18 @@ mongoose.connect(process.env.SECRET_DB,
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
+app.use(helmet());
+// ------------------ Intégrés à Helmet mais permet de savoir exactement de quoi Helmet protège ------------------------
+app.use(helmet.hidePoweredBy()); // On cache le powered by Express dans chaque entête de requête
+app.use(helmet.frameguard({ action: 'deny' })); // on empêche le click jacking
+app.use(helmet.xssFilter()); // On prévient les attaque xss
+app.use(helmet.noSniff()); // On empêche l'utilisateur de contourner l'entête Content-Type
+app.use(helmet.ieNoOpen()); // Empêche IE d'excécuter des téléchargements provenant de page potentiellement malveillante
+// ---------------------------------------------------------------------------------------------------------------------
 // Headers permettant :
 // - d'accéder à notre API depuis n'importe quelle origine ( '*' ) ;
 // - d'ajouter les headers mentionnés aux requêtes envoyées vers notre API (Origin , X-Requested-With , etc.) ;
 // - d'envoyer des requêtes avec les méthodes mentionnées ( GET ,POST , etc.).
-app.use(helmet());
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');

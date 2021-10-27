@@ -2,6 +2,8 @@ const Sauce = require('../models/sauce');
 // Import du package "file system" de Node qui donne accès aux fonctions qui nous permettent de modifier
 // le système de fichiers, y compris aux fonctions permettant de supprimer les fichiers.
 const fs = require('fs');
+// Import du module XSS pour empêcher les faille de type cross-site scripting (XSS)
+const xss = require('xss')
 
 // Get /api/sauces :
 // Méthode find() dans notre modèle Sauce afin de renvoyer un tableau contenant toutes les Sauces 
@@ -46,6 +48,7 @@ exports.getOneSauce = (req, res, next) => {
 // form-data, et non sous forme de JSON. Le corps de la requête contient une chaîne sauce , qui est simplement 
 // un objet sauce converti en chaîne. Nous devons donc l'analyser à l'aide de JSON.parse() pour obtenir un objet 
 // utilisable.
+// Utilisation du module XSS pour tous les champs à remplir pour prévenir des attaques XSS.
 // Nous devons également résoudre l'URL complète de notre image, car req.file.filename ne contient que le segment
 // filename . Nous utilisons req.protocol pour obtenir le premier segment (dans notre cas 'http' ). Nous 
 // ajoutons '://' , puis utilisons req.get('host') pour résoudre l'hôte du serveur (ici, 'localhost:3000' ). 
@@ -54,7 +57,12 @@ exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce);
   delete sauceObject._id;
   const sauce = new Sauce({
-    ...sauceObject,
+    userId: xss(sauceObject.userId),
+    name: xss(sauceObject.name),
+    manufacturer: xss(sauceObject.manufacturer),
+    description: xss(sauceObject.description),
+    mainPepper: xss(sauceObject.mainPepper),
+    heat: sauceObject.heat,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
     likes: 0,
     dislikes: 0,
