@@ -6,7 +6,7 @@ const passwordSchema = new passwordValidator();
  
 // Add properties to it
 passwordSchema
-.is().min(6)                                    // Taille minimum 6 caractères
+.is().min(8)                                    // Taille minimum 8 caractères
 .is().max(20)                                   // Taille maximum 20 caractères
 .has().uppercase()                              // Doit avoir une majuscule
 .has().lowercase()                              // Doit avoir une minuscule
