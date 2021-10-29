@@ -2,8 +2,6 @@
 const express = require('express');
 const router = express.Router();
 
-const requesteLimiter = require('../middleware/limiter')
-
 const userCtrl = require('../controllers/user');
 // Vérification de l'email
 const verifEmail = require('../middleware/email');
@@ -11,6 +9,6 @@ const verifEmail = require('../middleware/email');
 const verifPassword = require('../middleware/password')
 
 router.post('/signup', verifEmail, verifPassword, userCtrl.signup);
-router.post('/login', requesteLimiter, userCtrl.login);
+router.post('/login', userCtrl.login);
 
 module.exports = router;

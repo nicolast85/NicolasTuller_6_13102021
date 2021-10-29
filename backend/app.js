@@ -18,6 +18,9 @@ const mongoose = require('mongoose');
 // Import qui nous donnes accès au chemin de notre système de fichier
 const path = require('path');
 
+// Import du Middleware Limiter de requête
+const rateLimit = require('./middleware/limiter');
+
 // Import du routeur (sauce)
 const sauceRoutes = require('./routes/sauce');
 
@@ -31,6 +34,7 @@ mongoose.connect(process.env.SECRET_DB,
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
+app.use(rateLimit);
 app.use(helmet());
 // ------------------ Intégrés à Helmet mais permet de savoir exactement de quoi Helmet protège ------------------------
 app.use(helmet.hidePoweredBy()); // On cache le powered by Express dans chaque entête de requête
