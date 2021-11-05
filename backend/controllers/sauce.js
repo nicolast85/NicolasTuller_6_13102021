@@ -4,6 +4,8 @@ const Sauce = require('../models/sauce');
 const fs = require('fs');
 // Import du module XSS pour empêcher les faille de type cross-site scripting (XSS)
 const xss = require('xss')
+// Package pour pouvoir créer et vérifier les tokens d'authentification
+const jwt = require('jsonwebtoken');
 
 // Get /api/sauces :
 // Méthode find() dans notre modèle Sauce afin de renvoyer un tableau contenant toutes les Sauces 
@@ -76,20 +78,29 @@ exports.createSauce = (req, res, next) => {
 
 // Put /api/sauces/:id :
 // Création d'objet sauceObject qui regarde si req.file existe ou non. S'il existe, on traite la nouvelle image;
-// s'il n'existe pas, on traite simplement l'objet entrant. On crée ensuite une instance Sauce à partir de 
-// sauceObject , puis on effectue la modification.
+// s'il n'existe pas, on traite simplement l'objet entrant. 
+// On vérifie que l'auteur soit bien le meme que celui qui a fait la requête.
+// On crée ensuite une instance Sauce à partir de sauceObject , puis on effectue la modification.
 exports.modifySauce = (req, res, next) => {
   const sauceObject = req.file ?
     {
       ...JSON.parse(req.body.sauce),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
+    const token = req.headers.authorization.split(' ')[1];
+    const verifyToken = jwt.verify(token, process.env.SECRET_TOKEN);
+    const userId = verifyToken.userId;
+    if (userId !== sauceObject.userId){
+      res.status(403).json({ message : "Vous n'êtes pas l'auteur de ce post !"});
+    } else {
   Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
     .then(() => res.status(200).json({ message: 'Sauce modifiée !'}))
     .catch(error => res.status(400).json({ error }));
+    }
 };
 
 // Delete /api/sauces/:id :
+// On vérifie que l'auteur soit bien le meme que celui qui a fait la requête.
 // Nous utilisons l'ID que nous recevons comme paramètre pour accéder à la Sauce correspondante dans la base de
 // données. Nous utilisons le fait de savoir que notre URL d'image contient un segment /images/ pour séparer 
 // le nom de fichier. Nous utilisons ensuite la fonction unlink du package fs pour supprimer ce fichier, en lui
@@ -98,12 +109,20 @@ exports.modifySauce = (req, res, next) => {
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
+      const token = req.headers.authorization.split(' ')[1];
+      const verifyToken = jwt.verify(token, process.env.SECRET_TOKEN);
+      const userId = verifyToken.userId;
+      if (userId !== sauce.userId){
+        res.status(403).json({ message : "Vous n'êtes pas l'auteur de ce post"});
+  
+      } else {
       const filename = sauce.imageUrl.split('/images/')[1];
       fs.unlink(`images/${filename}`, () => {
         Sauce.deleteOne({ _id: req.params.id })
           .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
           .catch(error => res.status(400).json({ error }));
-      });
+        });
+      }
     })
     .catch(error => res.status(500).json({ error }));
 };
